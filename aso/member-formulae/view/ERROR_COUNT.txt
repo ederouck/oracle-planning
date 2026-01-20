@@ -1,0 +1,36 @@
+/* 
+   ASO Member formula
+   Application: Glomit
+   Cube: Glomit
+   Dimension: View
+   Member: ERROR_COUNT
+   Source: Oracle EPM Planning (UI copy/paste)
+   Updated: 20Jan26
+*/
+
+/*NONEMPTYTUPLE([View].[Periodic],[LC],[Client],[Location],[Project],[Spare],[Center],[Intercompany],[Data Source])*/
+IIF(
+	IsAncestor([Repline].[GLOMIT_VAL], [Repline].CurrentMember) AND NOT IsUda([Repline].CurrentMember, "GLOMIT_VAL_EXCLUDE"),
+    IIF(
+        NonEmptyCount(
+            CrossJoin(
+                CrossJoin(
+                    {Leaves([Entity].CurrentMember)},
+                    {Leaves([Lob].CurrentMember)}
+                ),
+                {[Repline].CurrentMember}
+            )
+        ) = 0,
+        Missing,
+        NonEmptyCount(
+            CrossJoin(
+                CrossJoin(
+                    {Leaves([Entity].CurrentMember)},
+                    {Leaves([Lob].CurrentMember)}
+                ),
+                {[Repline].CurrentMember}
+            )
+        )
+    ),
+    Missing
+)
