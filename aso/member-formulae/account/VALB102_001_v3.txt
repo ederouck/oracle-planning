@@ -1,0 +1,16 @@
+/* EDR - 20260102 */
+NONEMPTYTUPLE([TOTAL_REPLINES],[UPLOAD_AL],[LC])
+
+IIF(
+    ROUND(
+        ([TOTAL_REPLINES],[UPLOAD_AL],[LC])
+        ,0
+    ) <> 0,
+    
+    ROUND(
+        ([TOTAL_REPLINES],[UPLOAD_AL],[LC])
+        ,0
+    ) * [EntityLevelwithValidation],
+    
+    Missing
+)

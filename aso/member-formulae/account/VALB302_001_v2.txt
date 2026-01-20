@@ -1,0 +1,6 @@
+/* EDR -20260106 */
+NONEMPTYTUPLE([Location].[AA99997],[REPLINE].[TOTAL_REPLINES])
+(
+	ABS(([Location].[AA99997],[REPLINE].[TOTAL_REPLINES]))
+     )
+     * [EntityLevelwithValidation]

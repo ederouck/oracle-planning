@@ -1,0 +1,7 @@
+/* EDR -20260106 */
+NONEMPTYTUPLE([Account].[GL9999991],,[REPLINE].[TOTAL_REPLINES])
+(
+	ABS(([Account].[GL9999991],[REPLINE].[TOTAL_REPLINES]))
+     )
+     * [EntityLevelwithValidation]
+

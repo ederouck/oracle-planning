@@ -1,0 +1,25 @@
+/* EDR - 20260102 */
+NONEMPTYTUPLE([Repline].[REPLINE_OTHER],[Account].[BALANCE],[View].[Periodic])
+
+IIF(
+    ROUND(
+        (
+            ([GLOMIT_VALB101].[BALANCE_IMP],[Account].[GL7999999],[View].[Periodic])
+            -
+            ([Repline].[REPLINE_OTHER],[Account].[BALANCE],[View].[YTD])
+        ),
+        0
+    ) <> 0,
+
+    ROUND(
+        (
+            ([GLOMIT_VALB101].[BALANCE_IMP],[Account].[GL7999999],[View].[Periodic])
+            -
+            ([Repline].[REPLINE_OTHER],[Account].[BALANCE],[View].[YTD])
+        ),
+        0
+    )
+    * [EntityLevelwithValidation],
+
+    Missing
+)

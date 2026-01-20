@@ -1,0 +1,7 @@
+/* EDR -20260102 */
+NONEMPTYTUPLE([RepLine].[RL999997])
+(
+	ABS([RepLine].[RL999997])
+     )
+     * [EntityLevelwithValidation]
+

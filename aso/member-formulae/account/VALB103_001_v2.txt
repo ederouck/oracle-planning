@@ -1,0 +1,29 @@
+/* EDR - 20251218 */
+/* V3 - add total replines as we changed aggregation to the top*/
+/*
+Smartlist [Current Data Source] values:
+ 	0 – Select – Select a data source
+	1 – Fiora – Fiora
+	2 – Navision – Navision
+	3 – Indaver – Indaver
+	4 – Other – Other
+	5 – GLOMIT – GLOMIT
+	6 – Manual – Manual data entry for Actual
+*/
+NONEMPTYTUPLE([RL999999],[LC],[BU999])
+IIF(
+	(
+		([Current Data Source],[Actual],[Working],[No Currency],[No Client],[No LoB],[No Location],[No Project],[SP99999],[No Center],[No Account],[No Intercompany],[No Data Source],[Periodic])> 3
+		OR
+		([Current Data Source],[Actual],[Working],[No Currency],[No Client],[No LoB],[No Location],[No Project],[SP99999],[No Center],[No Account],[No Intercompany],[No Data Source],[Periodic])< 1
+	),
+    Missing,
+	([RL999999],[LC],[TOT_BU])-([TOTAL_REPLINES],[LC],[TOT_BU])
+)
+/* EDR -20260102 */
+NONEMPTYTUPLE([Client].[C_99999991])
+(
+	ABS([Client].[C_99999991])
+     )
+     * [EntityLevelwithValidation]
+

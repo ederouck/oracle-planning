@@ -1,0 +1,7 @@
+/* EDR -20260102 */
+NONEMPTYTUPLE([Center].[PC99997])
+(
+	ABS([Center].[PC99997])
+     )
+     * [EntityLevelwithValidation]
+

@@ -1,0 +1,11 @@
+/* EDR -20260108 */
+NONEMPTYTUPLE([Client].[C_99999991],[REPLINE].[TOTAL_REPLINES])
+IIF(
+    ROUND(
+        ABS(([Client].[C_99999991],[REPLINE].[TOTAL_REPLINES],[Intercompany],[Project]))
+        ,
+        0
+    ) <> 0
+	,
+	ABS(([Client].[C_99999991],[REPLINE].[TOTAL_REPLINES],[Intercompany],[Project]))
+)

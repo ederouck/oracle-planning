@@ -1,0 +1,7 @@
+/* EDR -20260102 */
+NONEMPTYTUPLE([Intercompany].[I_997])
+(
+	ABS([Intercompany].[I_997])
+     )
+     * [EntityLevelwithValidation]
+
