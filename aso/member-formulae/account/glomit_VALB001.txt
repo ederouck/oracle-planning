@@ -1,4 +1,4 @@
-/* Member formula
+/* ASO Member formula
    Application: Glomit
    Cube: Glomit
    Dimension: Repline
