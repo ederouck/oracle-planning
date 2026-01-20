@@ -1,0 +1,35 @@
+/* Member formula
+   Application: Glomit
+   Cube: Glomit
+   Dimension: Repline
+   Member: Glomit_VALB001
+   Source: Oracle EPM Planning (UI copy/paste)
+   Last extracted: 2026-01-20
+*/
+
+/* EDR - 20260119 */
+
+/*NONEMPTYTUPLE([Repline].[TOTAL_REPLINES],[Account].[P_AND_L],[View].[YTD]) */
+
+IIF(
+    ROUND(
+        (
+            ([GLOMIT_VALB001].[TOTAL_REPLINES_IMP],[Account].[GL7999999])
+            -
+            ([Repline].[TOTAL_REPLINES],[Account].[P_AND_L],[View].[YTD])
+        ),
+        0
+    ) <> 0,
+
+    ROUND(
+        (
+            ([GLOMIT_VALB001].[TOTAL_REPLINES_IMP],[Account].[GL7999999])
+            -
+            ([Repline].[TOTAL_REPLINES],[Account].[P_AND_L],[View].[YTD])
+        ),
+        0
+    )
+    * [EntityLevelwithValidation],
+
+    Missing
+)
