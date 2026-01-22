@@ -1,8 +1,14 @@
-// Loop through all data cells and apply background color based on string value
-operation.grid.dataCellIterator().each { DataCell cell ->
-    if (cell.data.contains == 'Open') {
-        cell.bgColor = 0x00FF00 // Green
-    } else if (cell.data.contains('Closed')) {
-        cell.bgColor = 0x0000FF // Blue
+/* RTPS: */
+if (!operation.hasGrid()) {
+    throwVetoException("No grid available to process!")
+}
+
+def grid = operation.grid
+
+grid.dataCellIterator().each { cell ->
+    if (cell.data == 1.0) {
+        cell.bgColor = 0x3cb371 // Green for Open
+    } else if (cell.data == 2.0) {
+        cell.bgColor = 0x4169e1 // Blue for Locked
     }
 }
