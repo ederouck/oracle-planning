@@ -1,0 +1,8 @@
+// Loop through all data cells and apply background color based on string value
+operation.grid.dataCellIterator().each { DataCell cell ->
+    if (cell.data.contains == 'Open') {
+        cell.bgColor = 0x00FF00 // Green
+    } else if (cell.data.contains('Closed')) {
+        cell.bgColor = 0x0000FF // Blue
+    }
+}
