@@ -1,14 +1,40 @@
 /* RTPS: */
+//************************************************************************************************************************
+// Script:        DataStatus_StatusColors
+// Description:   Colors status smartlists blue or green and errors in the actions red if starting with 'ERROR:'
+// Created by:    Bart & Partners
+// Creation date: 11 November, 2025
+//************************************************************************************************************************
+
 if (!operation.hasGrid()) {
     throwVetoException("No grid available to process!")
 }
 
-def grid = operation.grid
+DataGrid grid = operation.grid
 
-grid.dataCellIterator().each { cell ->
-    if (cell.data == 1.0) {
-        cell.bgColor = 0x3cb371 // Green for Open
-    } else if (cell.data == 2.0) {
-        cell.bgColor = 0x4169e1 // Blue for Locked
+Set<String> dataStatusReplines = ['Data Status Base Data', 'Data Status KPI'] as Set<String>
+Set<String> lastActionReplines = ['Last Action KPI', 'Last Action Base Data'] as Set<String>
+
+grid.dataCellIterator({ DataCell cell ->
+    String repline = cell.getMemberName('Repline')
+    dataStatusReplines.contains(repline) || lastActionReplines.contains(repline)
+}).each { DataCell cell ->
+
+    String repline = cell.getMemberName('Repline')
+
+    // 1) Last Action cells: if starts with "ERROR:" then Red
+    if (lastActionReplines.contains(repline)) {
+        String formattedValue = cell.formattedValue   // getFormattedValue()
+        if (formattedValue != null && formattedValue.startsWith('ERROR:')) {
+            cell.bgColor = 0xFF0000
+        }
+        return
+    }
+
+    // 2) Data Status cells: Smart List IDs
+    if (cell.data == 1d) {
+        cell.bgColor = 0x3cb371     // Open
+    } else if (cell.data == 2d) {
+        cell.bgColor = 0x4169E1     // Locked
     }
 }
