@@ -1,0 +1,1 @@
+operation.application.getDataMap("DM Exchange Rates").execute(true)

@@ -1,0 +1,175 @@
+/* RTPS:  {MultiDataSource},{MultiScenario},{MultiYears},{TopAccount},{TopCenter},{TopClient},{TopEntity},{TopIntercompany},{TopLoB},{TopLocation},{TopPeriod},{TopProject},{TopRepLine} */
+
+// ***********************************************************************************************
+// Clear data on the ASO cube.
+// This is used by an administrator to clear data for specific needs.
+// For each of the dimensions a top member must be specified and passed as an RTP.
+// (or leaving it the default value)
+// The script will clear all level o member under this top member.
+// ***********************************************************************************************
+
+def currDataSource = rtps.MultiDataSource.toString().replace('"','')
+def currScenario = rtps.MultiScenario.toString().replace('"','')
+def currYears = rtps.MultiYears.toString().replace('"','')
+def currAccount = rtps.TopAccount.toString().replace('"','')
+def currCenter = rtps.TopCenter.toString().replace('"','')
+def currClient = rtps.TopClient.toString().replace('"','')
+def currEntity = rtps.TopEntity.toString().replace('"','')
+def currIntercompany = rtps.TopIntercompany.toString().replace('"','')
+def currLoB = rtps.TopLoB.toString().replace('"','')
+def currLocation = rtps.TopLocation.toString().replace('"','')
+def currPeriod = rtps.TopPeriod.toString().replace('"','')
+def currProject = rtps.TopProject.toString().replace('"','')
+def currRepLine = rtps.TopRepLine.toString().replace('"','')
+
+currDataSource = '[Data Source].[' + currDataSource.replace(',','],[Data Source].[') + ']'
+currScenario = '[Scenario].[' + currScenario.replace(',','],[Scenario].[') + ']'
+currYears = '[Years].[' + currYears.replace(',','],[Years].[') + ']'
+
+currAccount = "Descendants([Account].[" + currAccount + "],[Account].Levels(0))"
+currCenter = "Descendants([Center].[" + currCenter + "],[Center].Levels(0))"
+currClient = "Descendants([Client].[" + currClient + "],[Client].Levels(0))"
+currEntity = "Descendants([Entity].[" + currEntity + "],[Entity].Levels(0))"
+currIntercompany = "Descendants([Intercompany].[" + currIntercompany + "],[Intercompany].Levels(0))"
+currLoB = "Descendants([LoB].[" + currLoB + "],[LoB].Levels(0))"
+currLocation = "Descendants([Location].[" + currLocation + "],[Location].Levels(0))"
+currPeriod = "Descendants([Period].[" + currPeriod + "],[Period].Levels(0))"
+currProject = "Descendants([Project].[" + currProject + "],[Project].Levels(0))"
+currRepLine = "Descendants([RepLine].[" + currRepLine + "],[RepLine].Levels(0))"
+
+println("--------------------------------------------------------------------------------")
+println("Clear data")
+println("--------------------------------------------------------------------------------")
+println("Data Source: " + currDataSource)
+println("Scenario: " + currScenario)
+println("Years: " + currYears)
+println("Account: " + currAccount)
+println("Center: " + currCenter)
+println("Client: " + currClient)
+println("Entity: " + currEntity)
+println("Intercompany: " + currIntercompany)
+println("LoB: " + currLoB)
+println("Location: " + currLocation)
+println("Period: " + currPeriod)
+println("Project: " + currProject)
+println("RepLine: " + currRepLine)
+
+//Global constants
+def cube = operation.application.getCube("GLOMIT")
+
+println("--------------------------------------------------------------------------------")
+println("Clear script")
+println("--------------------------------------------------------------------------------")
+
+def strPoV = ''
+
+//Multi members
+//SCENARIO
+strPoV = "Crossjoin(" + "{" + currScenario + "},"
+//YEARS
+strPoV = strPoV + "\nCrossjoin(" + "{" + currYears + "},"
+//DATA SOURCE
+strPoV = strPoV + "\nCrossjoin(" + "{" + currDataSource + "},"
+
+//Fixed members
+//SPARE
+strPoV = strPoV + "\nCrossjoin(" + "{" + "[Spare].[SP99999]" + "},"
+//VERSION
+strPoV = strPoV + "\nCrossjoin(" + "{" + "[Version].[Working]" + "},"
+//VIEW
+strPoV = strPoV + "\nCrossjoin(" + "{" + "[View].[Periodic]" + "},"
+//CURRENCY
+strPoV = strPoV + "\nCrossjoin(" + "{" + "[Currency].[LC],[Currency].[EUR_Reporting],[Currency].[USD_Reporting]" + "},"
+
+//Dynamic members
+//ACCOUNT
+strPoV = strPoV + "\nCrossjoin(" +  currAccount + ","
+//CENTER
+strPoV = strPoV + "\nCrossjoin(" +  currCenter + ","
+//CLIENT
+strPoV = strPoV + "\nCrossjoin(" +  currClient + ","
+//ENTITY
+strPoV = strPoV + "\nCrossjoin(" +  currEntity + ","
+//INTERCOMPANY
+strPoV = strPoV + "\nCrossjoin(" +  currIntercompany + ","
+//LOB
+strPoV = strPoV + "\nCrossjoin(" +  currLoB + ","
+//LOCATION
+strPoV = strPoV + "\nCrossjoin(" +  currLocation + ","
+//PERIOD
+strPoV = strPoV + "\nCrossjoin(" +  currPeriod + ","
+//PROJECT
+strPoV = strPoV + "\nCrossjoin(" +  currProject + ","
+//REPLINE
+//strPoV = strPoV + "\nCrossjoin(" +  currRepLine + ""
+strPoV = strPoV + "\n" +  currRepLine + ""
+
+//CLOSE JOINS
+strPoV = strPoV + "\n)"
+strPoV = strPoV + "\n)"
+strPoV = strPoV + "\n)"
+strPoV = strPoV + "\n)"
+strPoV = strPoV + "\n)"
+strPoV = strPoV + "\n)"
+strPoV = strPoV + "\n)"
+strPoV = strPoV + "\n)"
+strPoV = strPoV + "\n)"
+strPoV = strPoV + "\n)"
+strPoV = strPoV + "\n)"
+strPoV = strPoV + "\n)"
+strPoV = strPoV + "\n)"
+strPoV = strPoV + "\n)"
+strPoV = strPoV + "\n)"
+strPoV = strPoV + "\n)"
+//strPoV = strPoV + "\n)"
+
+
+/*
+//First Crossjoin (1 less than the number of dimension in the PoV)
+strPoV = 'Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin('
+
+//SCENARIO
+strPoV = strPoV + "{" + currScenario + "}"
+//PERIOD
+strPoV = strPoV + ",{" + currPeriod + "})"
+//SPARE
+strPoV = strPoV + ",{[SP99999]})"
+//VERSION
+strPoV = strPoV + ",{[Working]})"
+//VIEW
+strPoV = strPoV + ",{[Periodic]})"
+//YEARS
+strPoV = strPoV + ",{" + currYears + "})"
+//CURRENCY
+strPoV = strPoV + ",{[LC],[EUR_Reporting],[USD_Reporting]})"
+//ACCOUNT
+strPoV = strPoV + ",{" + currAccount + "})"
+//CENTER
+strPoV = strPoV + ",{" + currCenter + "})"
+//CLIENT
+strPoV = strPoV + ",{" + currClient + "})"
+//DATA SOURCE
+strPoV = strPoV + ",{Descendants([TOT_SOURCE], [TOT_SOURCE].dimension.Levels(0))})"
+//ENTITY
+strPoV = strPoV + ",{" + currEntity + "})"
+//INTERCOMPANY
+strPoV = strPoV + ",{" + currIntercompany + "})"
+//LOB
+strPoV = strPoV + ",{" + currLob + "})"
+//LOCATION
+strPoV = strPoV + ",{" + currLocation + "})"
+//PROJECT
+strPoV = strPoV + ",{" + currProject + "})"
+//REPLINE
+strPoV = strPoV + ",{" + currRepLine + "})"
+*/
+
+println(strPoV)
+
+println("--------------------------------------------------------------------------------")
+println("Clear")
+println("--------------------------------------------------------------------------------")
+//Perform the partial clear.
+cube.clearPartialData(strPoV,true)
+println("--------------------------------------------------------------------------------")
+
