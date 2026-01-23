@@ -15,18 +15,25 @@ DataGrid grid = operation.grid
 Set<String> dataStatusReplines = ['Data Status Base Data', 'Data Status KPI'] as Set<String>
 Set<String> lastActionReplines = ['Last Action KPI', 'Last Action Base Data'] as Set<String>
 
+
 grid.dataCellIterator({ DataCell cell ->
     String repline = cell.getMemberName('Repline')
     dataStatusReplines.contains(repline) || lastActionReplines.contains(repline)
 }).each { DataCell cell ->
 
     String repline = cell.getMemberName('Repline')
+    String lob = cell.getMemberName('LoB')
+    String entity = cell.getMemberName('Entity')
+    //println("Alle dimensies in cell: " + cell.memberNames)   
 
     // 1) Last Action cells: if starts with "ERROR:" then Red
     if (lastActionReplines.contains(repline)) {
         String formattedValue = cell.formattedValue   // getFormattedValue()
         if (formattedValue != null && formattedValue.startsWith('ERROR:')) {
             cell.bgColor = 0xFF0000
+            println("Format: " + repline + lob + entity + " -> red") 
+            println(lob)
+            println(entity)
         }
         return
     }
@@ -34,7 +41,10 @@ grid.dataCellIterator({ DataCell cell ->
     // 2) Data Status cells: Smart List IDs
     if (cell.data == 1d) {
         cell.bgColor = 0x3cb371     // Open
+        println("Format: " + repline + " -> green") 
+        
     } else if (cell.data == 2d) {
         cell.bgColor = 0x4169E1     // Locked
+        println("Format: " + repline + " -> blue") 
     }
 }
