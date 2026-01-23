@@ -1,0 +1,57 @@
+// Define the cellrange where to run
+GridIterator itr = operation.grid.dataCellIterator (
+		{
+        	// run if the account name is PL13000 and if the cell is NOT Readonly
+    		DataCell cell-> cell.accountName =='PL1300' && !cell.readOnly
+    	}
+	)
+
+// Define variables
+DataCell topCell //store the biggest amount here
+DataCell bottomCell //store the smalest amount here 
+double totalSales = 0.0 //gone store the total into
+Integer index = 0 //used to loop
+
+itr.each {
+	DataCell cell -> 
+    if(index == 0) {
+    	topCell = cell
+        bottomCell = cell
+    }
+    // check top and bottom cells
+    if(!cell.missing){ //if the value is not missing
+    	if(cell.data > topCell.data) { // amount is bigger than top
+        	topCell = cell  //this amount is the new top amount
+        }
+        if(cell.data < bottomCell.data) { // lower than bottom
+        	bottomCell = cell
+        }
+    }
+    // update total and index
+    totalSales += cell.data //add to total sales
+    index += 1 // raise the index
+    
+    // color references
+    Integer bgColorTop = 0x9ED41B
+    Integer bgColorBottom  = 0XF44336
+    
+    // Change background colors and tooltips of top and bottom cells
+    if(!(totalSales == 0) &&
+    	!(topCell.getMemberName('Product') == 
+        	bottomCell.getMemberName('Product'))
+        )
+        {
+        	// set top cell refs
+        	topCell.bgColor = bgColorTop
+            topCell.tooltip = "This is the top product, with $topCell.data / $totalSales [${(topCell.data / totalSales *100).round(2)}%]"
+        
+        	// set bottom cell refs
+        	bottomCell.bgColor = bgColorTop
+            bottomCell.tooltip = "This is the bottom product, with $bottomCell.data / $totalSales [${(bottomCell.data / totalSales *100).round(2)}%]"
+        
+        }
+    
+    println("Top Product [1/$index/$index] = ${topCell.getMemberName('Product')} [$topCell.data]")
+    println("Bottom product [$index/$index] = ${bottomCell.getMemberName('Product')} [$bottomCell.data]")
+    println("Total Sales = $totalSales")
+}

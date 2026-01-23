@@ -1,0 +1,35 @@
+Set<String> editedEntities = [] // declare a set of members, needs to be unique
+// for each edited cell, store the name of the member of the entity into the editedEntities 
+operation.grid.dataCellIterator({DataCell cell ->
+	cell.edited}).each { DataCell cell ->
+    	editedEntities << cell.getMemberName("Entity")
+}
+
+// Make a list of Pov members as a string
+List<String> povMemberNames =
+// store all the essbase members for this
+operation.grid.pov*.essbaseMbrName
+
+// Start building up the variable calcscript
+String calcScript ="""
+    FIX("${povMemberNames.join('", "')}",
+    "${editedEntities.join('", "')}"
+    )
+	CALC Dim("Product");
+    ENDFIX
+    """
+    
+println("The following calc script was executed by $operation.user.fullName: \n $calcScript")
+
+return calcScript
+
+/* Output log
+Log messages : 
+The following calc script was executed by Cloud User Seven: 
+ 
+    FIX("PL1000", "Jan", "BaseData", "FY24", "Plan", "Training Version 07", "USD",
+    "Entity 02"
+    )
+	CALC Dim("Product");
+    ENDFIX
+*/

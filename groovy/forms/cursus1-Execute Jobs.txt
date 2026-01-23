@@ -1,0 +1,15 @@
+String jobName = "Agg Europe"; // the name of the calc script in bso
+String jobType = "Rules";
+Map jobParams = [:];
+
+JobFactory jf = operation.application.getJobFactory();
+JobDefinition jobDef = jf.job(jobName, jobType, jobParams)
+
+// Option 1
+// Job job = operation.application.executeJob(jobDef)
+
+// Option 2 - status for both the groovy and the calc statement
+Job job = executeJob(jobDef);
+
+println job.status
+println("The following calc script was executed by $operation.user.fullName: \n $jobName")

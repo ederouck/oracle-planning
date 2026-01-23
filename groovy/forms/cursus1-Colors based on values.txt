@@ -1,0 +1,16 @@
+operation.grid.dataCellIterator.each{
+	if(it.missing) 
+    	{
+    		it.bgColor = 0x00BFFF
+    	} 
+    else if(it.data <= 5000) 
+    	{
+    		it.bgColor = 0xFF8C00
+    	} 
+  else if (it.data > 5000) 
+  		{
+    		it.bgColor = 0x00FA9A
+    	}
+    
+
+}
