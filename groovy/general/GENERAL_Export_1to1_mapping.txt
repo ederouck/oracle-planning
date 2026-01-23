@@ -1,0 +1,283 @@
+/* RTPS: */
+
+	def strCubeName = "GLOMIT"
+	def mappingRegel = ""
+    
+	// Define the cube and intersection dimensions
+	Cube cube = operation.application.getCube(strCubeName)
+
+	//Create the grid builder
+	def builder = cube.flexibleDataGridDefinitionBuilder()
+    
+	//*********************************************************************************************************************************************************************************************
+	//Export ENTITY mapping
+	//*********************************************************************************************************************************************************************************************
+    //Set PoV
+	builder.setPovDimensions("Scenario","Years","Period","Version","View","Lob","Account","Currency","Project","Center","Location","Data Source","Intercompany","Client","Spare")
+    builder.setPov("Actual","FY20","Jan","Working","Periodic","No LoB","No Account","No Currency","No Project","No Center","No Location","No Data Source","No Intercompany","No Client","SP99999")
+   
+    //Set columns
+    builder.setColumnDimensions("RepLine")
+    builder.addColumn("Data Status KPI")
+	 
+    //Set rows
+	builder.setRowDimensions("Entity")
+	builder.addRow('ILvl0Descendants("TOT_ENTITY")')
+
+	//Create file
+    Writer writeToFile
+    writeToFile = createFileWriter("Mapping_1to1_Entity.txt")
+    
+	// Load a data grid from the specified grid definition and cube
+	DataGrid grid = cube.loadGrid(builder.build(), false)
+    
+    grid.dataCellIterator().each { DataCell cell ->
+          mappingRegel = cell.getEntityName().replace('E_','') + "|" + cell.getEntityName() + "|||\n"
+          writeToFile.write(mappingRegel)
+	}
+    writeToFile.close()
+    
+    //*********************************************************************************************************************************************************************************************
+	//Export ACCOUNT mapping
+	//*********************************************************************************************************************************************************************************************
+    //Set PoV
+	builder = cube.flexibleDataGridDefinitionBuilder()
+    builder.setPovDimensions("Scenario","Years","Period","Version","View","Lob","Entity","Currency","Project","Center","Location","Data Source","Intercompany","Client","Spare")
+    builder.setPov("Actual","FY20","Jan","Working","Periodic","No LoB","No Entity","No Currency","No Project","No Center","No Location","No Data Source","No Intercompany","No Client","SP99999")
+   
+    //Set columns
+    builder.setColumnDimensions("RepLine")
+    builder.addColumn("Data Status KPI")
+	 
+    //Set rows
+	builder.setRowDimensions("Account")
+	builder.addRow('ILvl0Descendants("TOT_ACCOUNT")')
+
+	//Create file
+    //Writer writeToFile
+    writeToFile = createFileWriter("Mapping_1to1_Account.txt")
+    
+	// Load a data grid from the specified grid definition and cube
+	//DataGrid grid = cube.loadGrid(builder.build(), false)
+	grid = cube.loadGrid(builder.build(), false)
+    
+    grid.dataCellIterator().each { DataCell cell ->
+          mappingRegel = cell.getMemberName("Account").replace('GL','') + "|" + cell.getMemberName("Account") + "|||\n"
+          writeToFile.write(mappingRegel)
+	}
+    writeToFile.close()
+    
+    //*********************************************************************************************************************************************************************************************
+	//Export CENTER mapping
+	//*********************************************************************************************************************************************************************************************
+    //Set PoV
+	builder = cube.flexibleDataGridDefinitionBuilder()
+    builder.setPovDimensions("Scenario","Years","Period","Version","View","Lob","Entity","Currency","Project","Account","Location","Data Source","Intercompany","Client","Spare")
+    builder.setPov("Actual","FY20","Jan","Working","Periodic","No LoB","No Entity","No Currency","No Project","No Account","No Location","No Data Source","No Intercompany","No Client","SP99999")
+   
+    //Set columns
+    builder.setColumnDimensions("RepLine")
+    builder.addColumn("Data Status KPI")
+	 
+    //Set rows
+	builder.setRowDimensions("Center")
+	builder.addRow('ILvl0Descendants("PROFIT")')
+	builder.addRow('ILvl0Descendants("OTHER CENTERS")')
+
+	//Create file
+    //Writer writeToFile
+    writeToFile = createFileWriter("Mapping_1to1_Center.txt")
+    
+	// Load a data grid from the specified grid definition and cube
+	//DataGrid grid = cube.loadGrid(builder.build(), false)
+	grid = cube.loadGrid(builder.build(), false)
+    
+    grid.dataCellIterator().each { DataCell cell ->
+          mappingRegel = cell.getMemberName("Center").replace('PC','') + "|" + cell.getMemberName("Center") + "|||\n"
+          writeToFile.write(mappingRegel)
+	}
+    writeToFile.close()
+
+    //*********************************************************************************************************************************************************************************************
+	//Export CLIENT mapping
+	//*********************************************************************************************************************************************************************************************
+    //Set PoV
+	builder = cube.flexibleDataGridDefinitionBuilder()
+    builder.setPovDimensions("Scenario","Years","Period","Version","View","Lob","Entity","Currency","Project","Account","Location","Data Source","Intercompany","Center","Spare")
+    builder.setPov("Actual","FY20","Jan","Working","Periodic","No LoB","No Entity","No Currency","No Project","No Account","No Location","No Data Source","No Intercompany","No Center","SP99999")
+   
+    //Set columns
+    builder.setColumnDimensions("RepLine")
+    builder.addColumn("Data Status KPI")
+	 
+    //Set rows
+	builder.setRowDimensions("Client")
+	builder.addRow('ILvl0Descendants("TOT_CUST")')
+
+	//Create file
+    //Writer writeToFile
+    writeToFile = createFileWriter("Mapping_1to1_Client.txt")
+    
+	// Load a data grid from the specified grid definition and cube
+	//DataGrid grid = cube.loadGrid(builder.build(), false)
+	grid = cube.loadGrid(builder.build(), false)
+    
+    grid.dataCellIterator().each { DataCell cell ->
+          //mappingRegel = cell.getMemberName("Client").replace('C_','') + "|" + cell.getMemberName("Client") + "|||\n"
+          mappingRegel = cell.getMemberName("Client").substring(2) + "|" + cell.getMemberName("Client") + "|||\n"
+          writeToFile.write(mappingRegel)
+	}
+    writeToFile.close()
+    
+    //*********************************************************************************************************************************************************************************************
+	//Export INTERCOMPANY mapping
+	//*********************************************************************************************************************************************************************************************
+    //Set PoV
+	builder = cube.flexibleDataGridDefinitionBuilder()
+    builder.setPovDimensions("Scenario","Years","Period","Version","View","Lob","Entity","Currency","Project","Account","Location","Data Source","Client","Center","Spare")
+    builder.setPov("Actual","FY20","Jan","Working","Periodic","No LoB","No Entity","No Currency","No Project","No Account","No Location","No Data Source","No Client","No Center","SP99999")
+   
+    //Set columns
+    builder.setColumnDimensions("RepLine")
+    builder.addColumn("Data Status KPI")
+	 
+    //Set rows
+	builder.setRowDimensions("Intercompany")
+	builder.addRow('ILvl0Descendants("TOT_INTCO")')
+
+	//Create file
+    //Writer writeToFile
+    writeToFile = createFileWriter("Mapping_1to1_Intercompany.txt")
+    
+	// Load a data grid from the specified grid definition and cube
+	//DataGrid grid = cube.loadGrid(builder.build(), false)
+	grid = cube.loadGrid(builder.build(), false)
+    
+    grid.dataCellIterator().each { DataCell cell ->
+          mappingRegel = cell.getMemberName("Intercompany").replace('I_','') + "|" + cell.getMemberName("Intercompany") + "|||\n"
+          writeToFile.write(mappingRegel)
+	}
+    writeToFile.close()
+    
+    //*********************************************************************************************************************************************************************************************
+	//Export LOB mapping
+	//*********************************************************************************************************************************************************************************************
+    //Set PoV
+	builder = cube.flexibleDataGridDefinitionBuilder()
+    builder.setPovDimensions("Scenario","Years","Period","Version","View","Intercompany","Entity","Currency","Project","Account","Location","Data Source","Client","Center","Spare")
+    builder.setPov("Actual","FY20","Jan","Working","Periodic","No Intercompany","No Entity","No Currency","No Project","No Account","No Location","No Data Source","No Client","No Center","SP99999")
+   
+    //Set columns
+    builder.setColumnDimensions("RepLine")
+    builder.addColumn("Data Status KPI")
+	 
+    //Set rows
+	builder.setRowDimensions("LoB")
+	builder.addRow('ILvl0Descendants("TOT_BU")')
+
+	//Create file
+    //Writer writeToFile
+    writeToFile = createFileWriter("Mapping_1to1_LoB.txt")
+    
+	// Load a data grid from the specified grid definition and cube
+	//DataGrid grid = cube.loadGrid(builder.build(), false)
+	grid = cube.loadGrid(builder.build(), false)
+    
+    grid.dataCellIterator().each { DataCell cell ->
+          mappingRegel = cell.getMemberName("LoB").replace('BU','') + "|" + cell.getMemberName("LoB") + "|||\n"
+          writeToFile.write(mappingRegel)
+	}
+    writeToFile.close()
+    
+    //*********************************************************************************************************************************************************************************************
+	//Export LOCATION mapping
+	//*********************************************************************************************************************************************************************************************
+    //Set PoV
+	builder = cube.flexibleDataGridDefinitionBuilder()
+    builder.setPovDimensions("Scenario","Years","Period","Version","View","Intercompany","Entity","Currency","Project","Account","LoB","Data Source","Client","Center","Spare")
+    builder.setPov("Actual","FY20","Jan","Working","Periodic","No Intercompany","No Entity","No Currency","No Project","No Account","No LoB","No Data Source","No Client","No Center","SP99999")
+   
+    //Set columns
+    builder.setColumnDimensions("RepLine")
+    builder.addColumn("Data Status KPI")
+	 
+    //Set rows
+	builder.setRowDimensions("Location")
+	builder.addRow('ILvl0Descendants("WORLD")')
+
+	//Create file
+    //Writer writeToFile
+    writeToFile = createFileWriter("Mapping_1to1_Location.txt")
+    
+	// Load a data grid from the specified grid definition and cube
+	//DataGrid grid = cube.loadGrid(builder.build(), false)
+	grid = cube.loadGrid(builder.build(), false)
+    
+    grid.dataCellIterator().each { DataCell cell ->
+          mappingRegel = cell.getMemberName("Location") + "|" + cell.getMemberName("Location") + "|||\n"
+          writeToFile.write(mappingRegel)
+	}
+    writeToFile.close()
+    
+    //*********************************************************************************************************************************************************************************************
+	//Export PROJECT mapping
+	//*********************************************************************************************************************************************************************************************
+    //Set PoV
+	builder = cube.flexibleDataGridDefinitionBuilder()
+    builder.setPovDimensions("Scenario","Years","Period","Version","View","Intercompany","Entity","Currency","Location","Account","LoB","Data Source","Client","Center","Spare")
+    builder.setPov("Actual","FY20","Jan","Working","Periodic","No Intercompany","No Entity","No Currency","No Location","No Account","No LoB","No Data Source","No Client","No Center","SP99999")
+   
+    //Set columns
+    builder.setColumnDimensions("RepLine")
+    builder.addColumn("Data Status KPI")
+	 
+    //Set rows
+	builder.setRowDimensions("Project")
+	builder.addRow('ILvl0Descendants("TOT_PROJECTS")')
+
+	//Create file
+    //Writer writeToFile
+    writeToFile = createFileWriter("Mapping_1to1_Project.txt")
+    
+	// Load a data grid from the specified grid definition and cube
+	//DataGrid grid = cube.loadGrid(builder.build(), false)
+	grid = cube.loadGrid(builder.build(), false)
+    
+    grid.dataCellIterator().each { DataCell cell ->
+          mappingRegel = cell.getMemberName("Project").replace('P_','') + "|" + cell.getMemberName("Project") + "|||\n"
+          writeToFile.write(mappingRegel)
+	}
+    writeToFile.close()
+   
+   
+    //*********************************************************************************************************************************************************************************************
+	//Export REPLINE mapping
+	//*********************************************************************************************************************************************************************************************
+    //Set PoV
+	builder = cube.flexibleDataGridDefinitionBuilder()
+    builder.setPovDimensions("Project","Years","Period","Version","View","Intercompany","Entity","Currency","Location","Account","LoB","Data Source","Client","Center","Spare")
+    builder.setPov("No Project","FY20","Jan","Working","Periodic","No Intercompany","No Entity","No Currency","No Location","No Account","No LoB","No Data Source","No Client","No Center","SP99999")
+   
+    //Set columns
+    builder.setColumnDimensions("Scenario")
+    builder.addColumn("Actual")
+	 
+    //Set rows
+	builder.setRowDimensions("RepLine")
+	builder.addRow('ILvl0Descendants("TOTAL_REPLINES")')
+	builder.addRow('ILvl0Descendants("REPLINE_OTHER")')
+
+	//Create file
+    //Writer writeToFile
+    writeToFile = createFileWriter("Mapping_1to1_RepLine.txt")
+    
+	// Load a data grid from the specified grid definition and cube
+	//DataGrid grid = cube.loadGrid(builder.build(), false)
+	grid = cube.loadGrid(builder.build(), false)
+    
+    grid.dataCellIterator().each { DataCell cell ->
+          mappingRegel = cell.getMemberName("RepLine").replace('RL','') + "|" + cell.getMemberName("RepLine") + "|||\n"
+          writeToFile.write(mappingRegel)
+	}
+    writeToFile.close()
+   
