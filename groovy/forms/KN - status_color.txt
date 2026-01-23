@@ -31,9 +31,7 @@ grid.dataCellIterator({ DataCell cell ->
         String formattedValue = cell.formattedValue   // getFormattedValue()
         if (formattedValue != null && formattedValue.startsWith('ERROR:')) {
             cell.bgColor = 0xFF0000
-            println("Format: " + repline + lob + entity + " -> red") 
-            println(lob)
-            println(entity)
+            println("Format: repline=${repline} | lob=${lob} | entity=${entity} -> red")
         }
         return
     }
@@ -41,10 +39,10 @@ grid.dataCellIterator({ DataCell cell ->
     // 2) Data Status cells: Smart List IDs
     if (cell.data == 1d) {
         cell.bgColor = 0x3cb371     // Open
-        println("Format: " + repline + " -> green") 
+        println("Format: repline=${repline} | lob=${lob} | entity=${entity} -> green") 
         
     } else if (cell.data == 2d) {
         cell.bgColor = 0x4169E1     // Locked
-        println("Format: " + repline + " -> blue") 
+        println("Format: repline=${repline} | lob=${lob} | entity=${entity} -> blue") 
     }
 }
