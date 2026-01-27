@@ -1,0 +1,25 @@
+/* Updated 260106 - tuning average section - EDR */
+/* NONEMPTYMEMBER [View].[Periodic]*/
+CASE 
+    /* Balance: use closing period */
+    WHEN IsUDA([Repline].CurrentMember,"Balance")
+    THEN 
+        IIF(IsLeaf([Period].CurrentMember), 
+            [View].[Periodic],
+            (ClosingPeriod([Period].Levels(0), [Period].CurrentMember), [View].[Periodic])
+        )
+
+    /* Average: average of YTD Periodic values */
+    WHEN IsUDA([Repline].CurrentMember, "Average") THEN
+      Avg(
+        PeriodsToDate([Period].Generations(2), [Period].CurrentMember),
+        ([View].[Periodic])
+      )
+
+    /* Default: Flow (or other accounts): YTD sum */
+    ELSE 
+        SUM(
+            PeriodsToDate([Period].Generations(2), [Period].CurrentMember),
+            [View].[Periodic]
+        )
+END
