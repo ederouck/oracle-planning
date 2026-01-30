@@ -1,0 +1,346 @@
+/* RTPS: {CurrentScenario},{CurrentYear},{CurrentPeriod},{CurrentVersion}   */
+
+//************************************************************************************************************************
+// Script:        GENERAL_CurrenyConversion_AllEntities_EUR
+// Description:   This script will clear EUR_Reporting and convert to EUR_Reporting for all the entities that are not EUR (both AVG and EOM.
+// Created by:    Bart & Partners
+// Creation date: 25 November, 2025
+//************************************************************************************************************************
+
+//Global constants
+def strCubeName = "GLOMIT"
+
+//Variables
+def currScenario = rtps.CurrentScenario.toString().replace('"','')
+def currYear = rtps.CurrentYear.toString().replace('"','')
+def currPeriod = rtps.CurrentPeriod.toString().replace('"','')
+def currVersion = rtps.CurrentVersion.toString().replace('"','')
+def currEntity = ""
+def currCurrency = ""
+def strPoV = ""
+def strPoVAVG = ""
+def strPoVEOM = ""
+def strScript = ""
+def strSourceRegion = ""
+def myRateAVG = 0
+def myRateEOM = 0
+def now = new Date()
+def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+def formattedDate = sdf.format(now)
+
+//************************************************************************************************************************
+// Start script
+//************************************************************************************************************************
+println "Please note that the date and time values are taken from the server and my differ from local values."
+println "${formattedDate}: Start script"
+
+//************************************************************************************************************************
+//Start: Clear all data from EUR_Reporting before copying LC to EUR_Reporting.
+now = new Date()
+formattedDate = sdf.format(now)
+println "${formattedDate}: Start clear data of reporting currency"
+//************************************************************************************************************************
+
+//First Crossjoin (1 less than the number of dimension in the PoV)
+strPoV = "Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin("
+
+//SCENARIO
+strPoV = strPoV + "{[" + currScenario + "]}"
+//PERIOD
+strPoV = strPoV + ",{[" + currPeriod + "]})"
+//SPARE
+strPoV = strPoV + ",{[SP99999]})"
+//VERSION
+strPoV = strPoV + ",{[" + currVersion + "]})"
+//VIEW
+strPoV = strPoV + ",{[Periodic]})"
+//YEARS
+strPoV = strPoV + ",{[" + currYear + "]})"
+//CURRENCY
+strPoV = strPoV + ",{[EUR_Reporting]})"
+//ACCOUNT
+strPoV = strPoV + ",{Descendants([Account], [Account].dimension.Levels(0))})"
+//CENTER
+strPoV = strPoV + ",{Descendants([Center], [Center].dimension.Levels(0))})"
+//CLIENT
+strPoV = strPoV + ",{Descendants([TOT_CUST], [TOT_CUST].dimension.Levels(0))})"
+//strPoV = strPoV + ",{Descendants([Client], [Client].dimension.Levels(0))})"
+//DATA SOURCE
+strPoV = strPoV + ",{Descendants([TOT_SOURCE], [TOT_SOURCE].dimension.Levels(0))})"
+//ENTITY
+strPoV = strPoV + ",{Descendants([TOT_ENTITY], [TOT_ENTITY].dimension.Levels(0))})"
+//INTERCOMPANY
+strPoV = strPoV + ",{Descendants([TOT_INTCO], [TOT_INTCO].dimension.Levels(0))})"
+//LOB
+strPoV = strPoV + ",{Descendants([TOT_BU], [TOT_BU].dimension.Levels(0))})"
+//LOCATION
+strPoV = strPoV + ",{Descendants([WORLD], [WORLD].dimension.Levels(0))})"
+//PROJECT
+strPoV = strPoV + ",{Descendants([Project], [Project].dimension.Levels(0))})"
+//REPLINE
+strPoV = strPoV + ",{Descendants([TOTAL_REPLINES], [TOTAL_REPLINES].dimension.Levels(0)),Descendants([KPI_INP], [KPI_INP].dimension.Levels(0))})"
+
+//println(strPoV)
+
+//Perform the partial clear.
+operation.getApplication().getCube(strCubeName).clearPartialData(strPoV,true)
+//println "ASO Clear Result:"
+
+//************************************************************************************************************************
+//End
+now = new Date()
+formattedDate = sdf.format(now)
+println "${formattedDate}: End clear data from EUR_reporting currency"
+//************************************************************************************************************************
+
+//************************************************************************************************************************
+//Start: First copy all data to the reporting currency for all entities, also for KPI's
+now = new Date()
+formattedDate = sdf.format(now)
+println "${formattedDate}: Start copy data to reporting currency"
+//************************************************************************************************************************
+
+
+//First Crossjoin (1 less than the number of dimension in the PoV)
+strPoV = "Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin("
+
+//SCENARIO
+strPoV = strPoV + "{[" + currScenario + "]}"
+//PERIOD
+strPoV = strPoV + ",{[" + currPeriod + "]})"
+//SPARE
+strPoV = strPoV + ",{[SP99999]})"
+//VERSION
+strPoV = strPoV + ",{[" + currVersion + "]})"
+//VIEW
+strPoV = strPoV + ",{[Periodic]})"
+//YEARS
+strPoV = strPoV + ",{[" + currYear + "]})"
+
+//ACCOUNT
+strPoV = strPoV + ",{Descendants([Account], [Account].dimension.Levels(0))})"
+//CENTER
+//strPoV = strPoV + ",{Descendants([PROFIT], [PROFIT].dimension.Levels(0))})"
+strPoV = strPoV + ",{Descendants([Center], [Center].dimension.Levels(0))})"
+//CLIENT
+strPoV = strPoV + ",{Descendants([TOT_CUST], [TOT_CUST].dimension.Levels(0))})"
+//strPoV = strPoV + ",{Descendants([Client], [Client].dimension.Levels(0))})"
+//DATA SOURCE
+strPoV = strPoV + ",{Descendants([TOT_SOURCE], [TOT_SOURCE].dimension.Levels(0))})"
+//ENTITY
+strPoV = strPoV + ",{Descendants([TOT_ENTITY], [TOT_ENTITY].dimension.Levels(0))})"
+//INTERCOMPANY
+strPoV = strPoV + ",{Descendants([TOT_INTCO], [TOT_INTCO].dimension.Levels(0))})"
+//LOB
+strPoV = strPoV + ",{Descendants([TOT_BU], [TOT_BU].dimension.Levels(0))})"
+//LOCATION
+strPoV = strPoV + ",{Descendants([WORLD], [WORLD].dimension.Levels(0))})"
+//PROJECT
+//strPoV = strPoV + ",{Descendants([TOT_PROJECTS], [TOT_PROJECTS].dimension.Levels(0))})"
+strPoV = strPoV + ",{Descendants([Project], [Project].dimension.Levels(0))})"
+//REPLINE
+strPoV = strPoV + ",{Descendants([TOTAL_REPLINES], [TOTAL_REPLINES].dimension.Levels(0)),Descendants([KPI_INP], [KPI_INP].dimension.Levels(0))})"
+
+//println(strPoV)
+
+CustomCalcParameters parameters0 = new CustomCalcParameters()
+parameters0.Pov = strPoV
+parameters0.target = ""
+parameters0.creditMember = ""
+parameters0.debitMember = ""
+strScript = "([EUR_Reporting]) :=  ([LC]);"
+//println(strScript)
+
+parameters0.script = strScript
+parameters0.offset = ""
+
+strSourceRegion = "{[LC]}"
+//println(strSourceRegion)
+parameters0.sourceRegion = strSourceRegion
+parameters0.roundDigits = 8
+operation.getApplication().getCube(strCubeName).executeAsoCustomCalculation(parameters0)
+//************************************************************************************************************************
+//End
+now = new Date()
+formattedDate = sdf.format(now)
+println "${formattedDate}: End copy data to reporting currency"
+//************************************************************************************************************************
+
+// Setup the query on the metadata
+Cube cube = operation.application.getCube(strCubeName)
+Dimension entityDim = operation.application.getDimension("Entity", cube)
+Dimension currencyDim = operation.application.getDimension("Currency", cube)
+
+// Store the list of currencies into a collection
+def Currencies = currencyDim.getEvaluatedMembers("ILvl0Descendants(Input Currencies)", cube) as String[]
+
+// Execute a currency conversion on non EUR entities
+for (def iCurr = 0; iCurr < Currencies.size(); iCurr++)
+{
+	currCurrency = Currencies[iCurr]
+
+	if (currCurrency != "EUR" && currCurrency != "LC")
+	{
+        //************************************************************************************************************************
+        //Start retrieve exchange rate
+        now = new Date()
+        formattedDate = sdf.format(now)
+        println "${formattedDate}: Start retrieve exchange rate " + currCurrency
+        //************************************************************************************************************************
+
+
+        def builder = cube.flexibleDataGridDefinitionBuilder()
+
+		builder.setPovDimensions("Scenario","Years","Period","Version","View","Account","Entity","Project","Center","Location","Data Source","Intercompany","LoB","Client","Spare")
+		builder.setPov(currScenario,currYear,currPeriod,currVersion,"Periodic","No Account","No Entity","No Project","No Center","No Location","No Data Source","No Intercompany","No LoB","No Client","SP99999")
+
+		builder.setColumnDimensions("RepLine")
+		builder.addColumn("FX Rates - Average","FX Rates - Ending")
+
+		builder.setRowDimensions("Currency")
+		builder.addRow(currCurrency)
+
+		cube.loadGrid(builder.build(), false).withCloseable { grid ->
+				grid.dataCellIterator().each{ it ->
+                  if(it.getMemberName("RepLine") == "FX Rates - Average")
+                  {
+                      myRateAVG = it.getData()
+	                  println(currCurrency + " average rate: " + myRateAVG)
+                  }
+                  if(it.getMemberName("RepLine") == "FX Rates - Ending")
+                  {
+                      myRateEOM = it.getData()
+	                  println(currCurrency + " ending rate: " + myRateEOM)
+                  }
+                }
+		}
+
+        //************************************************************************************************************************
+        //End retrieve exchange rate
+        //now = new Date()
+        //formattedDate = sdf.format(now)
+        //println "${formattedDate}: End retrieve exchange rates " + currCurrency + ". Rate found: " + myRateAVG
+        //************************************************************************************************************************
+
+		// Store the list of companies into a collection
+		def Entities = entityDim.getEvaluatedMembers("ILvl0Descendants(TOT_ENTITY)", cube) as String[]
+
+		// Execute a currency conversion on non EUR entities
+		for (def iEnt = 0; iEnt < Entities.size(); iEnt++) {
+			Member currentEntity  = entityDim.getMember(Entities[iEnt])
+			def memberProps = currentEntity.toMap()
+			if (memberProps["Base Currency"] == currCurrency)
+			{
+
+                //************************************************************************************************************************
+                //Start currency conversion
+                now = new Date()
+                formattedDate = sdf.format(now)
+                println "${formattedDate}: Start currency conversion " + ": " + Entities[iEnt]
+                //************************************************************************************************************************
+
+				//intln(Entities[iEnt] + ": " + memberProps["Base Currency"])
+				currEntity = Entities[iEnt]
+				//currCurrency = memberProps["Base Currency"]
+
+				//First Crossjoin (1 less than the number of dimension in the PoV)
+				strPoVAVG = "Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin("
+				//ACCOUNT
+				//strPoV = strPoV + "{Descendants([TOT_ACCOUNT], [TOT_ACCOUNT].dimension.Levels(0))}"
+                strPoVAVG = strPoVAVG + "{Descendants([Account], [Account].dimension.Levels(0))}"
+				//CENTER
+				//strPoV = strPoV + ",{Descendants([PROFIT], [PROFIT].dimension.Levels(0))})"
+                strPoVAVG = strPoVAVG + ",{Descendants([Center], [Center].dimension.Levels(0))})"
+				//CLIENT
+				strPoVAVG = strPoVAVG + ",{Descendants([TOT_CUST], [TOT_CUST].dimension.Levels(0))})"
+				//DATA SOURCE
+				strPoVAVG = strPoVAVG + ",{Descendants([TOT_SOURCE], [TOT_SOURCE].dimension.Levels(0))})"
+				//ENTITY
+				strPoVAVG = strPoVAVG + ",{[" + currEntity + "]})"
+				//INTERCOMPANY
+				strPoVAVG = strPoVAVG + ",{Descendants([TOT_INTCO], [TOT_INTCO].dimension.Levels(0))})"
+				//LOB
+				strPoVAVG = strPoVAVG + ",{Descendants([TOT_BU], [TOT_BU].dimension.Levels(0))})"
+				//LOCATION
+				strPoVAVG = strPoVAVG + ",{Descendants([WORLD], [WORLD].dimension.Levels(0))})"
+				//PROJECT
+				strPoVAVG = strPoVAVG + ",{Descendants([TOT_PROJECTS], [TOT_PROJECTS].dimension.Levels(0))})"
+
+				//As of here the average and ending calculations differ, first make them equal and then add correct rates
+				strPoVEOM = strPoVAVG
+                
+				//REPLINE
+				strPoVAVG = strPoVAVG + ",{UDA([RepLine]," + "\""  + "AVG_RATE" + "\"" +  ")})"
+				strPoVEOM = strPoVEOM + ",{UDA([RepLine]," + "\""  + "EOM_RATE" + "\"" +  ")})"
+				//SCENARIO
+				strPoVAVG = strPoVAVG + ",{[" + currScenario + "]})"
+				strPoVEOM = strPoVEOM + ",{[" + currScenario + "]})"
+				//PERIOD
+				strPoVAVG = strPoVAVG + ",{[" + currPeriod + "]})"
+				strPoVEOM = strPoVEOM + ",{[" + currPeriod + "]})"
+				//SPARE
+				strPoVAVG = strPoVAVG + ",{[SP99999]})"
+				strPoVEOM = strPoVEOM + ",{[SP99999]})"
+				//VERSION
+				strPoVAVG = strPoVAVG + ",{[" + currVersion + "]})"
+				strPoVEOM = strPoVEOM + ",{[" + currVersion + "]})"
+				//VIEW
+				strPoVAVG = strPoVAVG + ",{[Periodic]})"
+				strPoVEOM = strPoVEOM + ",{[Periodic]})"
+				//YEARS
+				strPoVAVG = strPoVAVG + ",{[" + currYear + "]})"
+				strPoVEOM = strPoVEOM + ",{[" + currYear + "]})"
+
+				//println(strPoV)
+
+				//First average calculation
+				CustomCalcParameters parameters1 = new CustomCalcParameters()
+				parameters1.Pov = strPoVAVG
+				parameters1.target = ""
+				parameters1.creditMember = ""
+				parameters1.debitMember = ""
+				strScript = "([EUR_Reporting]) :=  ([LC]) * " + myRateAVG + ";"
+				parameters1.script = strScript
+				parameters1.offset = ""
+
+				strSourceRegion = "{[LC]}"
+				parameters1.sourceRegion = strSourceRegion
+				parameters1.roundDigits = 8
+				operation.getApplication().getCube(strCubeName).executeAsoCustomCalculation(parameters1)
+
+				//Then ending calculation
+				CustomCalcParameters parameters2 = new CustomCalcParameters()
+				parameters2.Pov = strPoVEOM
+				parameters2.target = ""
+				parameters2.creditMember = ""
+				parameters2.debitMember = ""
+				strScript = "([EUR_Reporting]) := ([LC]) * " + myRateEOM + ";"
+				parameters2.script = strScript
+				parameters2.offset = ""
+
+				strSourceRegion = "{[LC]}"
+				parameters2.sourceRegion = strSourceRegion
+				parameters2.roundDigits = 8
+				operation.getApplication().getCube(strCubeName).executeAsoCustomCalculation(parameters2)
+
+				//************************************************************************************************************************
+                //End currency conversion
+                now = new Date()
+                formattedDate = sdf.format(now)
+                println "${formattedDate}: End currency conversion " + ": " + Entities[iEnt]
+                //************************************************************************************************************************
+
+			}
+		}
+
+	}
+}
+
+
+
+//************************************************************************************************************************
+// End script
+//************************************************************************************************************************
+now = new Date()
+formattedDate = sdf.format(now)
+println "${formattedDate}: End script"
