@@ -15,7 +15,7 @@ CASE
             
             MIN(
                 DESCENDANTS([Entity].[Tot_Entity], [Entity].Levels(0)),
-                ([View].[Periodic])
+                ([View].[Periodic])*(([View].[Periodic])/([View].[Periodic]))
             )
         )
 
