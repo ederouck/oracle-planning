@@ -3,7 +3,7 @@
    Application: Glomit
    Cube: Glomit
    Dimension: View
-   Member: STATUS_ENTITY
+   Member: STATUS_LOB
    Source: Oracle EPM Planning (UI copy/paste)
    Updated: 20Jan26
 */

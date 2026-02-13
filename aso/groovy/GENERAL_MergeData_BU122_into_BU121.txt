@@ -1,0 +1,115 @@
+/* RTPS: {CurrentScenario},{CurrentYear},{CurrentPeriod},{CurrentVersion}   */
+
+//************************************************************************************************************************
+// Script:        GENERAL_MergeData_BU122_into_BU121
+// Description:   This script will merge data from BU122 into BU121
+// Created by:    Bart & Partners
+// Creation date: 30jan2026
+//************************************************************************************************************************
+
+//Global constants
+def strCubeName = "GLOMIT"
+
+//Variables
+def currScenario = rtps.CurrentScenario.toString().replace('"','')
+def currYear = rtps.CurrentYear.toString().replace('"','')
+def currPeriod = rtps.CurrentPeriod.toString().replace('"','')
+def currVersion = rtps.CurrentVersion.toString().replace('"','')
+def currEntity = ""
+def currCurrency = ""
+def strPoV = ""
+def strPoVAVG = ""
+def strPoVEOM = ""
+def strScript = ""
+def strSourceRegion = ""
+def now = new Date()
+def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+def formattedDate = sdf.format(now)
+
+//************************************************************************************************************************
+// Start script
+//************************************************************************************************************************
+println "Please note that the date and time values are taken from the server and my differ from local values."
+println "${formattedDate}: Start script"
+
+
+//************************************************************************************************************************
+//Start: First copy all data to the reporting currency for all entities, also for KPI's
+now = new Date()
+formattedDate = sdf.format(now)
+println "${formattedDate}: Start copy data to reporting currency"
+//************************************************************************************************************************
+
+
+//First Crossjoin (1 less than the number of dimension in the PoV)
+strPoV = "Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin(Crossjoin("
+
+//SCENARIO
+strPoV = strPoV + "{[" + currScenario + "]}"
+//PERIOD
+strPoV = strPoV + ",{[" + currPeriod + "]})"
+//SPARE
+strPoV = strPoV + ",{[SP99999]})"
+//VERSION
+strPoV = strPoV + ",{[" + currVersion + "]})"
+//VIEW
+strPoV = strPoV + ",{[Periodic]})"
+//YEARS
+strPoV = strPoV + ",{[" + currYear + "]})"
+
+//ACCOUNT
+strPoV = strPoV + ",{Descendants([Account], [Account].dimension.Levels(0))})"
+//CENTER
+//strPoV = strPoV + ",{Descendants([PROFIT], [PROFIT].dimension.Levels(0))})"
+strPoV = strPoV + ",{Descendants([Center], [Center].dimension.Levels(0))})"
+//CLIENT
+strPoV = strPoV + ",{Descendants([TOT_CUST], [TOT_CUST].dimension.Levels(0))})"
+//strPoV = strPoV + ",{Descendants([Client], [Client].dimension.Levels(0))})"
+//DATA SOURCE
+strPoV = strPoV + ",{Descendants([TOT_SOURCE], [TOT_SOURCE].dimension.Levels(0))})"
+//ENTITY
+strPoV = strPoV + ",{Descendants([TOT_ENTITY], [TOT_ENTITY].dimension.Levels(0))})"
+//INTERCOMPANY
+strPoV = strPoV + ",{Descendants([TOT_INTCO], [TOT_INTCO].dimension.Levels(0))})"
+//CURRENCY
+strPoV = strPoV + ",{[LC]},{Descendants([Reporting Currencies], [Reporting Currencies].dimension.Levels(0))})"
+
+//** LOB ** OUT
+//strPoV = strPoV + ",{Descendants([TOT_BU], [TOT_BU].dimension.Levels(0))})"
+
+//LOCATION
+strPoV = strPoV + ",{Descendants([WORLD], [WORLD].dimension.Levels(0))})"
+//PROJECT
+//strPoV = strPoV + ",{Descendants([TOT_PROJECTS], [TOT_PROJECTS].dimension.Levels(0))})"
+strPoV = strPoV + ",{Descendants([Project], [Project].dimension.Levels(0))})"
+//REPLINE
+strPoV = strPoV + ",{Descendants([TOTAL_REPLINES], [TOTAL_REPLINES].dimension.Levels(0)),Descendants([KPI_INP], [KPI_INP].dimension.Levels(0))})"
+
+//println(strPoV)
+
+CustomCalcParameters parameters0 = new CustomCalcParameters()
+parameters0.Pov = strPoV
+parameters0.target = ""
+parameters0.creditMember = ""
+parameters0.debitMember = ""
+strScript = "([BU121]) :=  ([BU121])+([BU122]);"
+println(strScript)
+
+parameters0.script = strScript
+parameters0.offset = ""
+
+strSourceRegion = "{([BU121])+([BU122])}"
+//println(strSourceRegion)
+parameters0.sourceRegion = strSourceRegion
+parameters0.roundDigits = 8
+//operation.getApplication().getCube(strCubeName).executeAsoCustomCalculation(parameters0)
+
+//************************************************************************************************************************
+//End
+
+//************************************************************************************************************************
+// End script
+//************************************************************************************************************************
+now = new Date()
+formattedDate = sdf.format(now)
+println "${formattedDate}: End script"

@@ -1,0 +1,22 @@
+/* 
+   ASO Member formula
+   Application: Glomit
+   Cube: Glomit
+   Dimension: View
+   Member: STATUS_LOB2
+   Source: Oracle EPM Planning (UI copy/paste)
+   Updated: 12feb26
+*/
+CASE 
+    WHEN IsAncestor([Repline].[GLOMIT_STATUS], [Repline].CurrentMember) THEN
+        
+        MIN(
+            DESCENDANTS([Lob].CurrentMember, [Lob].Levels(0)),
+            
+            MIN(
+                DESCENDANTS([Entity].[Tot_Entity], [Entity].Levels(0)),
+                ([View].[Periodic])
+            )
+        )
+
+END
