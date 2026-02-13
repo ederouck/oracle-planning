@@ -5,17 +5,18 @@
    Dimension: View
    Member: STATUS_LOB
    Source: Oracle EPM Planning (UI copy/paste)
-   Updated: 20Jan26
+   Updated: 13feb26
 */
 CASE 
     WHEN IsAncestor([Repline].[GLOMIT_STATUS], [Repline].CurrentMember) THEN
-	    CASE   
+        
+CASE   
             /* Lo Lob*/
             WHEN IsLeaf([Lob].CurrentMember)
             THEN
                 MIN(
                     	 DESCENDANTS([Entity].[Tot_Entity], [Entity].Levels(0)),
-                          ([View].[Periodic])
+                          ([View].[Periodic])*(([View].[Periodic])/([View].[Periodic]))
                 	)
             
             /* > LO Lob */
@@ -24,7 +25,8 @@ CASE
             	
                 MIN(
                     	 CHILDREN([Lob].CurrentMember),
-                          ([View].[Status_Lob])
+                          ([View].[Status_Lob])*(([View].[Status_Lob])/([View].[Status_Lob]))
                 	) 
         END
+
 END
