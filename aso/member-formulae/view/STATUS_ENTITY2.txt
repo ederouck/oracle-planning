@@ -1,3 +1,11 @@
+/* 
+   ASO Member formula
+   Application: Glomit
+   Cube: Glomit
+   Dimension: View
+   Member: STATUS_ENTITY2
+   Source: Oracle EPM Planning
+*/
 CASE 
   WHEN IsAncestor([Repline].[GLOMIT_STATUS], [Repline].CurrentMember) THEN
     CASE
