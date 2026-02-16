@@ -4,6 +4,7 @@
    Cube: Glomit
    Dimension: View
    Member: STATUS_ENTITY
+   Explanation: This will rollup the level 0 status for all underlying lob's
    Source: Oracle EPM Planning
 */
 CASE 
@@ -23,7 +24,7 @@ CASE
             	
                 MIN(
                     	 CHILDREN([Entity].CurrentMember),
-                          ([View].[Status_Entity]) 
+                          ([View].[Status_Entity]) * ( ([View].[Status_Entity]) /([View].[Status_Entity]) )
                 	) 
         END
  END
