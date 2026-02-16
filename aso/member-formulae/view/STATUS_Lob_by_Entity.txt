@@ -1,0 +1,33 @@
+/* 
+   ASO Member formula
+   Application: Glomit
+   Cube: Glomit
+   Dimension: View
+   Member: STATUS_Lob_by_Entity
+   Explanation: rolls up the status of a bu for all entities below
+   Source: Oracle EPM Planning (UI copy/paste)
+   Updated: 13feb26
+*/
+CASE 
+    WHEN IsAncestor([Repline].[GLOMIT_STATUS], [Repline].CurrentMember) THEN
+        
+CASE   
+            /* Lo Lob*/
+            WHEN IsLeaf([Lob].CurrentMember)
+            THEN
+                MIN(
+                    	 DESCENDANTS([Entity].[Tot_Entity], [Entity].Levels(0)),
+                          ([View].[Periodic])*(([View].[Periodic])/([View].[Periodic]))
+                	)
+            
+            /* > LO Lob */
+            WHEN NOT IsLeaf([Lob].CurrentMember)
+            THEN
+            	
+                MIN(
+                    	 CHILDREN([Lob].CurrentMember),
+                          ([View].[STATUS_Lob_by_Entity])*(([View].[STATUS_Lob_by_Entity])/([View].[STATUS_Lob_by_Entity]))
+                	) 
+        END
+
+END
