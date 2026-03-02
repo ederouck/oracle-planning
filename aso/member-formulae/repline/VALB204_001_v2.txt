@@ -1,7 +1,25 @@
-/* EDR -20260106 */
-NONEMPTYTUPLE([Account].[GL9999991],,[REPLINE].[TOTAL_REPLINES])
-(
-	ABS(([Account].[GL9999991],[REPLINE].[TOTAL_REPLINES]))
-     )
-     * [EntityLevelwithValidation]
+/* 
+   ASO Member formula
+   Application: Glomit
+   Cube: Glomit
+   Dimension: Repline
+   Member: VALB204_001 - Amount to correct on Account: GL9999991
+   Source: Oracle EPM Planning (UI copy/paste)
+   Updated: 26feb2023
+*/
 
+NONEMPTYTUPLE([Account].[GL9999991],[REPLINE].[TOTAL_REPLINES])
+
+IIF(
+    ROUND(
+        ([Account].[GL9999991],[REPLINE].[TOTAL_REPLINES])
+        ,0
+    ) <> 0,
+    
+    ROUND(
+        ([Account].[GL9999991],[REPLINE].[TOTAL_REPLINES])
+        ,0
+    ) * [EntityLevelwithValidation],
+    
+    Missing
+)

@@ -1,4 +1,12 @@
-/* EDR - 20260122 */
+/* 
+   ASO Member formula
+   Application: Glomit
+   Cube: Glomit
+   Dimension: Repline
+   Member: VALB001_001 - The total Replines for this month does not match the YTD amount
+   Source: Oracle EPM Planning (UI copy/paste)
+   Updated: 26feb2026
+*/
 
 /*NONEMPTYTUPLE([Repline].[TOTAL_REPLINES],[Account].[P_AND_L],[View].[YTD]) */
 
@@ -12,14 +20,16 @@ IIF(
         0
     ) <> 0,
 
-    ROUND(
+    ABS(
+		ROUND(
         (
-            ([TOTAL_REPLINES_IMP],[Account].[GL7999999])
-            -
-            ([Repline].[TOTAL_REPLINES],[Account].[P_AND_L],[View].[YTD])
-        ),
-        0
-    )
+				([TOTAL_REPLINES_IMP],[Account].[GL7999999])
+				-
+				([Repline].[TOTAL_REPLINES],[Account].[P_AND_L],[View].[YTD])
+			),
+			0
+		)
+	)
     * [EntityLevelwithValidation],
 
     Missing

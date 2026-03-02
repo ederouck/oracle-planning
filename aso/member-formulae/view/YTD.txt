@@ -1,6 +1,21 @@
-/* Updated 260106 - tuning average section - EDR */
+/* 
+   ASO Member formula
+   Application: Glomit
+   Cube: Glomit
+   Dimension: View
+   Member: YTD
+   Source: Oracle EPM Planning (UI copy/paste)
+   Updated: 26feb2023
+*/
+
 /* NONEMPTYMEMBER [View].[Periodic]*/
+
 CASE 
+	/* Block YTD on Year_Total */
+    WHEN ([Period].CurrentMember) is [YearTotal]
+    THEN
+    	Missing
+		
     /* Balance: use closing period */
     WHEN IsUDA([Repline].CurrentMember,"Balance")
     THEN 

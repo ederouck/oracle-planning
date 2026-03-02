@@ -1,4 +1,13 @@
-/* EDR - 20260122 */
+/* 
+   ASO Member formula
+   Application: Glomit
+   Cube: Glomit
+   Dimension: Repline
+   Member: VALB103_001 - You have an unbalance on your entity data to correct
+   Source: Oracle EPM Planning (UI copy/paste)
+   Updated: 26feb2023
+*/
+
 NONEMPTYTUPLE([TOTAL_REPLINES_IMP],[Account].[GL7999999],[Repline].[TOTAL_REPLINES],[Account].[P_AND_L])
 
 IIF(
@@ -9,12 +18,14 @@ IIF(
         ,0
     ) <> 0,
     
-    ROUND(
-        ([TOTAL_REPLINES_IMP],[Account].[GL7999999])
-        - 
-        ([Repline].[TOTAL_REPLINES],[Account].[P_AND_L])
-        ,0
-    ) * [EntityLevelwithValidation],
+    ABS(
+		ROUND(
+			([TOTAL_REPLINES_IMP],[Account].[GL7999999])
+			- 
+			([Repline].[TOTAL_REPLINES],[Account].[P_AND_L])
+			,0
+		)
+	) * [EntityLevelwithValidation],
     
     Missing
 )

@@ -1,0 +1,50 @@
+/*RTPS:*/
+
+// Login parameters
+String user = 'clouduser01@keyteach.com'
+String password = 'Keyteach1236'
+String url = 'https://planning-a548542.pbcs.em3.oraclecloud.com/HyperionPlanning'
+
+// Get EPM Automate instance
+EpmAutomate automate = getEpmAutomate()
+EpmAutomateStatus status
+
+// Execute login command
+logMessage("Operation: login $user ******** $url")
+status = automate.execute('login', user, password, url)
+logOperationStatus(status)
+
+// Job console export parameters
+String fileName = 'JobConsole_User99.zip'
+String emailTo = 'clouduser01@keyteach.com'
+String emailSubject = 'Job Console Export'
+String emailBody = "Automated export from $url"
+
+// Export job console logs
+logMessage("Operation: exportJobConsole $fileName")
+status = automate.execute('exportJobConsole', fileName)
+logOperationStatus(status)
+
+// Execute sendMail command to send logs via email
+logMessage("Operation: sendMail $emailTo $emailSubject Body=$emailBody Attachments=$fileName")
+status = automate.execute('sendmail', emailTo, emailSubject, "Body=$emailBody", "Attachments=$fileName")
+logOperationStatus(status)
+
+// Execute logout command
+logMessage("Operation: logout")
+status = automate.execute('logout')
+logOperationStatus(status)
+
+// Function to print formatted message and timestamp to log
+void logMessage(String message) {
+    Date date = new Date()
+    SimpleDateFormat sdf = 
+    	new SimpleDateFormat("MM/dd/yyyy HH:mm:ss")
+    println("[${sdf.format(date)}][GROOVY] $message")
+}
+
+// Function to print EPM Automate statuses to log
+void logOperationStatus(EpmAutomateStatus opstatus) {
+    logMessage(opstatus.getOutput())
+    logMessage("Return code: ${opstatus.getStatus()}")
+}

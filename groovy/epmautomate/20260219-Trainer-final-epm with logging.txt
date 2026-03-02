@@ -1,0 +1,46 @@
+/*RTPS:*/
+
+// Login parameters
+String user = 'clouduser01@keyteach.com'
+String password = 'Keyteach1236'
+String url = 'https://planning-a548542.pbcs.em3.oraclecloud.com/HyperionPlanning'
+
+// Get EPM Automate instance
+EpmAutomate automate = getEpmAutomate()
+EpmAutomateStatus status
+
+// Execute login command
+logMessage("Operation: login $user ******** $url")
+status = automate.execute('login', user, password, url)
+logOperationStatus(status)
+
+// Integration parameters
+String integrationName = 'DemoDataLoad_User99'
+String importMode = 'Replace'
+String exportMode = 'Merge'
+String periodName = 'Aug-25'
+String fileName = 'DemoDataLoad.csv'
+
+// Execute integration
+logMessage("Operation: runIntegration $integrationName importMode=$importMode exportMode=$exportMode periodName={$periodName} inputFileName=$fileName")
+status = automate.execute('runIntegration', integrationName, "importMode=$importMode", "exportMode=$exportMode", "periodName={$periodName}", "inputFileName=$fileName")
+logOperationStatus(status)
+
+// Execute logout command
+logMessage("Operation: logout")
+status = automate.execute('logout')
+logOperationStatus(status)
+
+// Function to print formatted message and timestamp to log
+void logMessage(String message) {
+    Date date = new Date()
+    SimpleDateFormat sdf = 
+    	new SimpleDateFormat("MM/dd/yyyy HH:mm:ss")
+    println("[${sdf.format(date)}][GROOVY] $message")
+}
+
+// Function to print EPM Automate statuses to log
+void logOperationStatus(EpmAutomateStatus opstatus) {
+    logMessage(opstatus.getOutput())
+    logMessage("Return code: ${opstatus.getStatus()}")
+}

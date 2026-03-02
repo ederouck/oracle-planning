@@ -1,25 +1,36 @@
-/* EDR - 20260122 */
-/* Watch out, the input is done on a pl account */
-NONEMPTYTUPLE([Repline].[REPLINE_OTHER],[Account].[TOT_ACCOUNT],[View].[Periodic])
+/* 
+   ASO Member formula
+   Application: Glomit
+   Cube: Glomit
+   Dimension: Repline
+   Member: VALB101_001 - You have a difference on BS to correct
+   Source: Oracle EPM Planning (UI copy/paste)
+   Updated: 02march2026
+   Watch out: Input is done on a PL account 
+*/
+
+NONEMPTYTUPLE([Repline].[REPLINE_OTHER].[RL999999],[Account].[BALANCE],[View].[Periodic])
 
 IIF(
     ROUND(
         (
-            ([BALANCE_IMP],[Account].[TOT_ACCOUNT],[View].[Periodic])
+            ([BALANCE_IMP],[Account].[BALANCE],[View].[Periodic])
             -
-            ([Repline].[REPLINE_OTHER],[Account].[TOT_ACCOUNT],[View].[Periodic])
+            ([Repline].[REPLINE_OTHER],[Account].[BALANCE],[View].[Periodic])
         ),
         0
     ) <> 0,
 
-    ROUND(
-        (
-            ([BALANCE_IMP],[Account].[TOT_ACCOUNT],[View].[Periodic])
-            -
-            ([Repline].[REPLINE_OTHER],[Account].[TOT_ACCOUNT],[View].[Periodic])
-        ),
-        0
-    )
+    ABS(
+		ROUND(
+			(
+				([BALANCE_IMP],[Account].[BALANCE],[View].[Periodic])
+				-
+				([Repline].[REPLINE_OTHER],[Account].[BALANCE],[View].[Periodic])
+			),
+			0
+		)
+	)
     * [EntityLevelwithValidation],
 
     Missing

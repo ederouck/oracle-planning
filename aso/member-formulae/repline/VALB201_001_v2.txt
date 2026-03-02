@@ -1,11 +1,27 @@
-/* EDR -20260108 */
+/* 
+   ASO Member formula
+   Application: Glomit
+   Cube: Glomit
+   Dimension: Repline
+   Member: VALB201_001 - Amount to correct on Client: C_99999991
+   Source: Oracle EPM Planning (UI copy/paste)
+   Updated: 26feb2023
+*/
+
 NONEMPTYTUPLE([Client].[C_99999991],[REPLINE].[TOTAL_REPLINES])
+
 IIF(
     ROUND(
-        ABS(([Client].[C_99999991],[REPLINE].[TOTAL_REPLINES],[Intercompany],[Project]))
-        ,
-        0
-    ) <> 0
-	,
-	ABS(([Client].[C_99999991],[REPLINE].[TOTAL_REPLINES],[Intercompany],[Project]))
+        ([Client].[C_99999991],[REPLINE].[TOTAL_REPLINES])
+        ,0
+    ) <> 0,
+    
+    ABS(
+		ROUND(
+			([Client].[C_99999991],[REPLINE].[TOTAL_REPLINES])
+			,0
+		)
+	) * [EntityLevelwithValidation],
+    
+    Missing
 )

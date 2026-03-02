@@ -1,0 +1,29 @@
+/*RTPS:*/
+
+Connection connection = operation.application.getConnection('DemoFX')
+
+HttpResponse<String> rates = connection.get().asString()
+
+//println rates.body
+
+JsonSlurper slurp = new JsonSlurper()
+
+Map mapRates = (Map) slurp.parseText(rates.body)
+
+//println "GBP to USD rate: ${mapRates.gbp['rate']}"
+//println "CAD to USD rate: ${mapRates.cad['rate']}"
+
+double rateGBP = (double) mapRates.gbp['rate']
+double rateEUR = (double) mapRates.eur['rate']
+
+String calcScript = """
+FIX("FX Rates - Average", "FY26", "Jan", "BaseData", "Working", "Plan", "No Product")
+
+	"EUR" = $rateEUR;
+    "GBP" = $rateGBP;
+
+ENDFIX
+"""
+
+println calcScript
+return calcScript

@@ -1,0 +1,24 @@
+/* RTPS:*/
+//Login parameters
+String user ='clouduser06@keyteach.com'
+String pw ='Keyteach0807'
+String url ='https://planning-a548542.pbcs.em3.oraclecloud.com/HyperionPlanning' 
+
+//Get EPMAUTOMATE instance
+EpmAutomate automate = getEpmAutomate()
+
+//Execute login command
+automate.execute('login',user,pw,url)
+
+//Integration parameters 
+String integrationName = 'DemoDataLoad_User6' 
+String importMode = 'Replace' 
+String exportMode = 'Merge' 
+String periodName = 'Aug-25' 
+String fileName = 'DemoDataLoad.csv'
+
+//Execute integration 
+automate.execute('runIntegration', integrationName, "importMode=$importMode", "exportMode=$exportMode", "periodName={$periodName}", "inputFileName=$fileName")
+
+//Execute logout command
+automate.execute('logout')

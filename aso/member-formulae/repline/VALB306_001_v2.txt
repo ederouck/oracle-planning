@@ -1,6 +1,27 @@
-/* EDR -20260102 */
-NONEMPTYTUPLE([Center].[PC99995])
-(
-IIF(ABS([Center].[PC99995])> 1, 1,Missing)
-     )
-     * [EntityLevelwithValidation]
+/* 
+   ASO Member formula
+   Application: Glomit
+   Cube: Glomit
+   Dimension: Repline
+   Member: VALB306_001 - Amount to correct on Center : PC99995
+   Source: Oracle EPM Planning (UI copy/paste)
+   Updated: 26feb2023
+*/
+
+NONEMPTYTUPLE([Center].[PC99995],[REPLINE].[TOTAL_REPLINES])
+
+IIF(
+    ROUND(
+        ([Center].[PC99995],[REPLINE].[TOTAL_REPLINES])
+        ,0
+    ) <> 0,
+    
+    ABS(
+	ROUND(
+        ([Center].[PC99995],[REPLINE].[TOTAL_REPLINES])
+        ,0
+    )
+	)	* [EntityLevelwithValidation],
+    
+    Missing
+)

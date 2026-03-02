@@ -1,0 +1,12 @@
+REM -- Backup section
+epmautomate exportAppSecurity Backup_KN_DEV_202602181035.CSV
+epmautomate downloadFile Backup_KN_DEV_202602181035.CSV
+copy Backup_KN_DEV_202602181035.CSV "D:\data\Bart & Partners\Katoen Natie - Planning\104 - Build\104.10 - Security\EPMAUTOMATE\050_importAppSecurity\"
+REM -- End of backup
+
+REM -- Begin of processing
+epmautomate uploadfile "D:\data\Bart & Partners\Katoen Natie - Planning\104 - Build\104.10 - Security\EPMAUTOMATE\050_importAppSecurity\001 DEV  - Run 1 (LOB ENT CNT)\DimSec_LobEntCnt-001.csv" inbox/epmautomate/security
+epmautomate importAppSecurity inbox/epmautomate/security/DimSec_LobEntCnt-001.csv inbox/epmautomate/security/DimSec_LobEntCnt-001_error.csv
+epmautomate downloadFile DimSec_LobEntCnt-001_error.csv
+copy DimSec_LobEntCnt-001_error.csv "D:\data\Bart & Partners\Katoen Natie - Planning\104 - Build\104.10 - Security\EPMAUTOMATE\050_importAppSecurity\"
+REM -- End of processing

@@ -1,6 +1,27 @@
-/* EDR -20260106 */
+/* 
+   ASO Member formula
+   Application: Glomit
+   Cube: Glomit
+   Dimension: Repline
+   Member: VALB302_001 - Amount to correct on Location: AA99997
+   Source: Oracle EPM Planning (UI copy/paste)
+   Updated: 26feb2023
+*/
+
 NONEMPTYTUPLE([Location].[AA99997],[REPLINE].[TOTAL_REPLINES])
-(
-	ABS(([Location].[AA99997],[REPLINE].[TOTAL_REPLINES]))
-     )
-     * [EntityLevelwithValidation]
+
+IIF(
+    ROUND(
+        ([Location].[AA99997],[REPLINE].[TOTAL_REPLINES])
+        ,0
+    ) <> 0,
+    
+    ABS(
+		ROUND(
+			([Location].[AA99997],[REPLINE].[TOTAL_REPLINES])
+			,0
+		)
+	)	* [EntityLevelwithValidation],
+    
+    Missing
+)

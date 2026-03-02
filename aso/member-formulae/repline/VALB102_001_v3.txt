@@ -3,10 +3,11 @@
    Application: Glomit
    Cube: Glomit
    Dimension: Repline
-   Member: VALB102 - Analytical Ledger should be empty within the entity (all BU's)
+   Member: VALB102_001 - Analytical Ledger should be empty within the entity (all BU's)
    Source: Oracle EPM Planning (UI copy/paste)
-   Updated: 16feb2023
+   Updated: 26feb2023
 */
+
 NONEMPTYTUPLE([TOTAL_REPLINES],[UPLOAD_AL],[LC])
 
 IIF(
@@ -15,10 +16,12 @@ IIF(
         ,0
     ) <> 0,
     
-    ROUND(
-        ([TOTAL_REPLINES],[UPLOAD_AL],[TOT_BU],[LC])
-        ,0
-    ) * [EntityLevelwithValidation],
+    ABS(
+		ROUND(
+			([TOTAL_REPLINES],[UPLOAD_AL],[TOT_BU],[LC])
+			,0
+		)
+	) * [EntityLevelwithValidation],
     
     Missing
 )
