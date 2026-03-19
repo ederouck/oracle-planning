@@ -3,17 +3,17 @@
    Application: Glomit
    Cube: Glomit
    Dimension: Repline
-   Member: Data Status Base Data - Count (counts the number of entity/lob combinations that have a status)
+   Member: Data Status KPI Data - Count (counts the number of entity/lob combinations that have a status)
    Source: Oracle EPM Planning (UI copy/paste)
    Updated: 19mar2026
 */
-NONEMPTYTUPLE([Data Status Base Data])
+NONEMPTYTUPLE([Data Status KPI])
     
 CASE
 	/* L0 Lob + L0 Entity */
 	WHEN IsLeaf([Lob].CurrentMember) AND IsLeaf([Entity].CurrentMember)
 	THEN
-		([Data Status Base Data])/([Data Status Base Data])
+		([Data Status KPI])/([Data Status KPI])
 
 	/* all other cases */
 	ELSE 
@@ -22,6 +22,6 @@ CASE
 				LEAVES([Entity].CURRENTMEMBER),
 				LEAVES([LOB].CURRENTMEMBER)
 			),
-			(([Data Status Base Data]) / ([Data Status Base Data]))
+			(([Data Status KPI]) / ([Data Status KPI]))
 		)
 END
