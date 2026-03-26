@@ -1,0 +1,26 @@
+/* 
+   ASO Member formula
+   Application: Glomit
+   Cube: Glomit
+   Dimension: Repline
+   Member: VALB102_001 - Analytical Ledger should be empty within the entity (all BU's)
+   Source: Oracle EPM Planning (UI copy/paste)
+   Updated: 26feb2023
+*/
+
+NONEMPTYTUPLE([GT_REPLINES],[UPLOAD_AL],[LC])
+
+IIF(
+    TRUNCATE(
+        ([GT_REPLINES],[UPLOAD_AL],[TOT_BU],[LC])
+    ) <> 0,
+    
+    ABS(
+		TRUNCATE(
+			([GT_REPLINES],[UPLOAD_AL],[TOT_BU],[LC])
+			
+		)
+	) * [EntityLevelwithValidation],
+    
+    Missing
+)
